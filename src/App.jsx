@@ -72,6 +72,20 @@ function App() {
 
   const progressPercentage = Math.min((count / goal) * 100, 100)
 
+  function test(){
+    my.getAuthCode({
+  scopes: ['auth_base'],
+  success: (res) => {
+    my.alert({
+      content: res.authCode,
+    });
+  },
+  fail: (res) => {
+      console.log(res.authErrorScopes)
+  },
+});
+  }
+
   return (
     <div className="app-container">
       <header className="app-header">
@@ -109,6 +123,7 @@ function App() {
             </div>
           </div>
         </section>
+        <button onClick={()=>test()}>Auth</button>
 
         {}
         <InfoSection />
