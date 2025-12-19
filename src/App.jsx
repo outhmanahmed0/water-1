@@ -74,15 +74,15 @@ function App() {
 
   function test(){
     my.getAuthCode({
-  scopes: ['auth_base',"USER_ID"],
-  success: (res) => {
-    my.alert({
-      content: res.authCode,
-    });
-  },
-  fail: (res) => {
-      console.log(res.authErrorScopes)
-  },
+    scopes: ['auth_base',"USER_ID"],
+    success: (res) => {
+      my.alert({
+        content: res.authCode,
+      });
+    },
+    fail: (res) => {
+        console.log(res.authErrorScopes)
+    },
 });
   }
 
