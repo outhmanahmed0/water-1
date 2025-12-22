@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import History from './components/History'
 import InfoSection from './components/InfoSection'
-import { Connect } from 'vite'
 
 function App() {
 
@@ -73,6 +72,7 @@ function App() {
 
   const progressPercentage = Math.min((count / goal) * 100, 100)
   var authCode = '';
+
   function test(){
     my.getAuthCode({
                 scopes: ['auth_base', 'USER_ID'],
@@ -109,6 +109,10 @@ function App() {
                 },
             });
   }
+
+  function copyAuthCode() {
+            navigator.clipboard.writeText(authCode);
+        }
 
 
     
