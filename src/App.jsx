@@ -75,40 +75,44 @@ function App() {
 
   function test(){
     my.getAuthCode({
-      scopes: ['auth_base', 'USER_ID'],
+      scopes: ['auth_base','USER_ID'],
       success: (res) => {
-      authCode = res.authCode;
-      document.getElementById('authCode').textContent = authCode;
-
-      fetch('https://its.mouamle.space/api/auth-with-superQi', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          token: authCode
+        const authCode = res.authCode
+        
+        fetch('https://its.mouamle.space/api/auth-with-superQi', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            token: authCode
+          })
         })
-      }).then(res => res.json()).then(data => {
-      my.alert({
-       content: "Login successful",
-      });
-      }).catch(err => {
-        let errorDetails = '';
-        if (err && typeof err === 'object') {
-          errorDetails = JSON.stringify(err, null, 2);
-        } else {
+        .then(res => res.json())
+        .then(data => {
+          my.alert({
+            content: "Login successful",
+          });
+          console.log('Authentication response:', data);
+        })
+        .catch(err => {
+          let errorDetails = '';
+          if (err && typeof err === 'object') {
+            errorDetails = JSON.stringify(err, null, 2);
+          } else {
             errorDetails = String(err);
-        }
-        my.alert({
-          content: "Error: " + errorDetails,
+          }
+          my.alert({
+            content: "Error: " + errorDetails,
+          });
+          console.error('Authentication error:', err);
         });
-      });
       },
-      fail: (res) => {
-        console.log(res.authErrorScopes)
-      },
+      fail: (err) => {
+        console.log('Authorization failed:', err.authErrorScopes);
+      }
     });
-    }
+  }
 
 
     
