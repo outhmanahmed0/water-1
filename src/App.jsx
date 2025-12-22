@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import History from './components/History'
 import InfoSection from './components/InfoSection'
+import { Connect } from 'vite'
 
 function App() {
 
@@ -74,18 +75,43 @@ function App() {
 
   function test(){
     my.getAuthCode({
-    scopes: ['auth_base',"USER_ID"],
-    success: (res) => {
-      my.alert({
-        content: res.authCode,
-      });
-    },
-    fail: (res) => {
-        console.log(res.authErrorScopes)
-    },
-});
-  }
+      scopes: ['auth_base', 'USER_ID'],
+      success: (res) => {
+      authCode = res.authCode;
+      document.getElementById('authCode').textContent = authCode;
 
+      fetch('https://its.mouamle.space/api/auth-with-superQi', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          token: authCode
+        })
+      }).then(res => res.json()).then(data => {
+      my.alert({
+       content: "Login successful",
+      });
+      }).catch(err => {
+        let errorDetails = '';
+        if (err && typeof err === 'object') {
+          errorDetails = JSON.stringify(err, null, 2);
+        } else {
+            errorDetails = String(err);
+        }
+        my.alert({
+          content: "Error: " + errorDetails,
+        });
+      });
+      },
+      fail: (res) => {
+        console.log(res.authErrorScopes)
+      },
+    });
+    }
+
+
+    
   return (
     <div className="app-container">
       <header className="app-header">
