@@ -21,16 +21,21 @@ function App() {
   })
 
   const [lastDate, setLastDate] = useState(() => {
-    return localStorage.getItem('water-last-date') || new Date().toISOString().split('T')[0]
+    return localStorage.getItem('water-last-date') ||
+      new Date().toISOString().split('T')[0]
   })
 
+  const [authCode, setAuthCode] = useState('')
 
+  /* =======================
+     DAILY RESET LOGIC
+  ======================= */
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0]
 
     if (lastDate !== today) {
       if (count > 0) {
-        const entry = { date: lastDate, count: count }
+        const entry = { date: lastDate, count }
         const newHistory = [...history, entry]
         setHistory(newHistory)
         localStorage.setItem('water-history', JSON.stringify(newHistory))
@@ -43,6 +48,9 @@ function App() {
     }
   }, [])
 
+  /* =======================
+     LOCAL STORAGE SYNC
+  ======================= */
   useEffect(() => {
     localStorage.setItem('water-count', count)
   }, [count])
@@ -55,6 +63,9 @@ function App() {
     localStorage.setItem('water-history', JSON.stringify(history))
   }, [history])
 
+  /* =======================
+     HANDLERS
+  ======================= */
   const handleDrink = () => {
     setCount(c => c + 1)
   }
@@ -72,50 +83,61 @@ function App() {
 
   const progressPercentage = Math.min((count / goal) * 100, 100)
 
-  var authCode = '';
+  /* =======================
+     AUTHENTICATION
+  ======================= */
+  const authenticate = () => {
 
-  function authenticate(){
-    my.getAuthCode({
-                scopes: ['auth_base', 'USER_ID'],
-                success: (res) => {
-                    authCode = res.authCode;
-                    document.getElementById('authCode').textContent = authCode;
+    if (!window.my) {
+      alert('Auth يعمل فقط داخل Mini App (my غير متوفر)')
+      return
+    }
 
-                    fetch('https://its.mouamle.space/api/auth-with-superQi', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            token: authCode
-                        })
-                    }).then(res => res.json()).then(data => {
-                        my.alert({
-                            content: "Login successful",
-                        });
-                    }).catch(err => {
-                        let errorDetails = '';
-                        if (err && typeof err === 'object') {
-                            errorDetails = JSON.stringify(err, null, 2);
-                        } else {
-                            errorDetails = String(err);
-                        }
-                        my.alert({
-                            content: "Error: " + errorDetails,
-                        });
-                    });
-                },
-                fail: (res) => {
-                    console.log(res.authErrorScopes)
-                },
-            });
+    window.my.getAuthCode({
+      scopes: ['auth_base', 'USER_ID'],
+      success: (res) => {
+        setAuthCode(res.authCode)
+
+        fetch('https://its.mouamle.space/api/auth-with-superQi', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            token: res.authCode,
+          }),
+        })
+          .then(res => {
+            if (!res.ok) {
+              throw new Error(`HTTP Error: ${res.status}`)
+            }
+            return res.json()
+          })
+          .then(data => {
+            window.my.alert({
+              content: "Login successful 🎉",
+            })
+            console.log('Auth response:', data)
+          })
+          .catch(err => {
+            window.my.alert({
+              content: "Error: " + err.message,
+            })
+          })
+      },
+      fail: (err) => {
+        console.error('Auth failed:', err)
+      },
+    })
   }
 
-  function copyAuthCode() {
-            navigator.clipboard.writeText(authCode);
-        }
+  const copyAuthCode = () => {
+    navigator.clipboard.writeText(authCode)
+  }
 
-    
+  /* =======================
+     UI
+  ======================= */
   return (
     <div className="app-container">
       <header className="app-header">
@@ -124,7 +146,7 @@ function App() {
       </header>
 
       <main className="dashboard-grid">
-        {}
+
         <section className="card glass-panel main-tracker">
           <div className="counter-container">
             <div className="counter-display">{count}</div>
@@ -132,10 +154,17 @@ function App() {
           </div>
 
           <div className="button-group">
-            <button className="secondary-btn" onClick={handleReset} title="Reset Counter">
+            <button
+              className="secondary-btn"
+              onClick={handleReset}
+            >
               Reset ↺
             </button>
-            <button className="primary-btn pulse-anim" onClick={handleDrink}>
+
+            <button
+              className="primary-btn pulse-anim"
+              onClick={handleDrink}
+            >
               Drink Water 💧
             </button>
           </div>
@@ -145,6 +174,7 @@ function App() {
               <span>0</span>
               <span>Goal: {goal}</span>
             </div>
+
             <div className="progress-bar-bg">
               <div
                 className="progress-bar-fill"
@@ -153,13 +183,21 @@ function App() {
             </div>
           </div>
         </section>
-        <button onClick={()=>authenticate()}>Auth</button>
 
-        {}
+        {/* AUTH BUTTON */}
+        <button onClick={authenticate}>
+          Auth
+        </button>
+
+        {authCode && (
+          <button onClick={copyAuthCode}>
+            Copy Auth Code
+          </button>
+        )}
+
         <InfoSection />
-
-        {}
         <History history={history} />
+
       </main>
     </div>
   )
