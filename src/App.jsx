@@ -71,9 +71,10 @@ function App() {
   }
 
   const progressPercentage = Math.min((count / goal) * 100, 100)
+
   var authCode = '';
 
-  function test(){
+  function authenticate(){
     my.getAuthCode({
                 scopes: ['auth_base', 'USER_ID'],
                 success: (res) => {
@@ -114,7 +115,6 @@ function App() {
             navigator.clipboard.writeText(authCode);
         }
 
-
     
   return (
     <div className="app-container">
@@ -153,7 +153,7 @@ function App() {
             </div>
           </div>
         </section>
-        <button onClick={()=>test()}>Auth</button>
+        <button onClick={()=>authenticate()}>Auth</button>
 
         {}
         <InfoSection />
