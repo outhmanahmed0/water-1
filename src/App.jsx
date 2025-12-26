@@ -27,9 +27,7 @@ function App() {
 
   const [authCode, setAuthCode] = useState('')
 
-  /* =======================
-     DAILY RESET LOGIC
-  ======================= */
+
   useEffect(() => {
     const today = new Date().toISOString().split('T')[0]
 
@@ -48,9 +46,6 @@ function App() {
     }
   }, [])
 
-  /* =======================
-     LOCAL STORAGE SYNC
-  ======================= */
   useEffect(() => {
     localStorage.setItem('water-count', count)
   }, [count])
@@ -63,9 +58,6 @@ function App() {
     localStorage.setItem('water-history', JSON.stringify(history))
   }, [history])
 
-  /* =======================
-     HANDLERS
-  ======================= */
   const handleDrink = () => {
     setCount(c => c + 1)
   }
@@ -83,9 +75,6 @@ function App() {
 
   const progressPercentage = Math.min((count / goal) * 100, 100)
 
-  /* =======================
-     AUTHENTICATION
-  ======================= */
   const authenticate = () => {
 
     if (!window.my) {
@@ -115,7 +104,7 @@ function App() {
           })
           .then(data => {
             window.my.alert({
-              content: "Login successful 🎉",
+              content: data,
             })
             console.log('Auth response:', data)
           })
@@ -135,9 +124,7 @@ function App() {
     navigator.clipboard.writeText(authCode)
   }
 
-  /* =======================
-     UI
-  ======================= */
+
   return (
     <div className="app-container">
       <header className="app-header">
