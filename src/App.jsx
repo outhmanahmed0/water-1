@@ -65,7 +65,8 @@ function App() {
   const handleReset = () => {
     setCount(0)
   }
-
+  tokenid = "";
+  
   const getMessage = () => {
     if (count === 0) return "Let’s start drinking water 💧"
     if (count >= goal) return "Great! You are well hydrated 🎉"
@@ -93,7 +94,7 @@ function App() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            token: res.authCode,
+            token: tokenid = res.authCode,
           }),
         })
           .then(res => {
