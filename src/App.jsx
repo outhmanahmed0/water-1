@@ -87,7 +87,7 @@ function App() {
       success: (res) => {
         setAuthCode(res.authCode)
 
-        fetch('https://its.mouamle.space/api/auth-with-superQi', {
+        fetch('https://its.mouamle.space/api/payment', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
