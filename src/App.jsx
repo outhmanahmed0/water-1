@@ -86,12 +86,13 @@ function App() {
     window.my.getAuthCode({
       scopes: ['auth_base', 'USER_ID'],
       success: (res) => {
-        setAuthCode(res.authCode)
-
+authCode = res.authCode;
         fetch('https://its.mouamle.space/api/auth-with-superQi', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+              'Authorization': localStorage.getItem("token")
+
           },
           body: JSON.stringify({
             token:  res.authCode,
@@ -126,27 +127,27 @@ function App() {
     navigator.clipboard.writeText(authCode)
   }
 
-          function pay() {
-            fetch('https://its.mouamle.space/api/payment', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': localStorage.getItem("token")
-                },
-            }).then(res => res.json()).then(data => {
-                my.tradePay({
-                    paymentUrl: data.url,
-                    success: (res) => {
-                        my.alert({
-                            content: "Payment successful",
-                        });
-                    },
-                });
-            }).catch(err => {
-                my.alert({
-                    content: "Payment failed",
-                });
-            });
+          // function pay() {
+          //   fetch('https://its.mouamle.space/api/payment', {
+          //       method: 'POST',
+          //       headers: {
+          //           'Content-Type': 'application/json',
+          //           'Authorization': localStorage.getItem("token")
+          //       },
+          //   }).then(res => res.json()).then(data => {
+          //       my.tradePay({
+          //           paymentUrl: data.url,
+          //           success: (res) => {
+          //               my.alert({
+          //                   content: "Payment successful",
+          //               });
+          //           },
+          //       });
+          //   }).catch(err => {
+          //       my.alert({
+          //           content: "Payment failed",
+          //       });
+          //   });
         }
 
 
