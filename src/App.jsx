@@ -124,6 +124,21 @@ function App() {
     navigator.clipboard.writeText(authCode)
   }
 
+  const trade = ()=> {my.tradePay({
+  paymentUrl: "https://www.wallet.com/cashier?orderId=xxxxxxx", // get the redirectUrl from the server first
+  success: (res) => {
+    my.alert({
+      content: JSON.stringify(res),
+    });
+  },
+  fail: (res) => {
+    my.alert({
+      content: JSON.stringify(res),
+    });
+  }
+});
+}
+
 
   return (
     <div className="app-container">
@@ -174,6 +189,10 @@ function App() {
         {/* AUTH BUTTON */}
         <button onClick={authenticate}>
           Auth
+        </button>
+
+        <button onClick={trade}>
+          Pay
         </button>
 
         {authCode && (
