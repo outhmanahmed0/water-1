@@ -78,10 +78,7 @@ function App() {
 
   const authenticate = () => {
 
-    if (!window.my) {
-      alert('Auth يعمل فقط داخل Mini App (my غير متوفر)')
-      return
-    }
+    
 
     window.my.getAuthCode({
       scopes: ['auth_base', 'USER_ID'],
@@ -91,7 +88,6 @@ authCode = res.authCode;
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-              'Authorization': localStorage.getItem("token")
 
           },
           body: JSON.stringify({
@@ -123,9 +119,9 @@ authCode = res.authCode;
     })
   }
 
-  const copyAuthCode = () => {
-    navigator.clipboard.writeText(authCode)
-  }
+  // const copyAuthCode = () => {
+  //   navigator.clipboard.writeText(authCode)
+  // }
 
           // function pay() {
           //   fetch('https://its.mouamle.space/api/payment', {
@@ -238,6 +234,6 @@ authCode = res.authCode;
       </main>
     </div>
   )
-}
+
 
 export default App
