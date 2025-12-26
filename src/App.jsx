@@ -104,7 +104,7 @@ function App() {
           })
           .then(data => {
             window.my.alert({
-              content: data,
+              content: data.token,
             })
             console.log('Auth response:', data)
           })
