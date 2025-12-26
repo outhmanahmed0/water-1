@@ -66,7 +66,7 @@ function App() {
     setCount(0)
   }
   var tokenid = "";
-
+  const [token,setToken] = useState("")
   const getMessage = () => {
     if (count === 0) return "Let’s start drinking water 💧"
     if (count >= goal) return "Great! You are well hydrated 🎉"
@@ -94,7 +94,7 @@ function App() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            token: tokenid = res.authCode,
+            token:  res.authCode,
           }),
         })
           .then(res => {
@@ -105,9 +105,10 @@ function App() {
           })
           .then(data => {
             window.my.alert({
-              content: data.token,
+              content: setToken(()=>token = data.token)
             })
             console.log('Auth response:', data)
+            localStorage.setItem("token",token)
           })
           .catch(err => {
             window.my.alert({
@@ -130,7 +131,7 @@ function App() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': token
+                    'Authorization': localStorage.getItem("token")
                 },
             }).then(res => res.json()).then(data => {
                 my.tradePay({
