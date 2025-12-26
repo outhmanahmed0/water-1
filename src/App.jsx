@@ -87,7 +87,7 @@ function App() {
       success: (res) => {
         setAuthCode(res.authCode)
 
-        fetch('https://its.mouamle.space/api/payment', {
+        fetch('https://its.mouamle.space/api/auth-with-superQi', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -124,20 +124,48 @@ function App() {
     navigator.clipboard.writeText(authCode)
   }
 
-  const trade = ()=> {my.tradePay({
-  paymentUrl: "https://www.wallet.com/cashier?orderId=xxxxxxx", // get the redirectUrl from the server first
-  success: (res) => {
-    my.alert({
-      content: JSON.stringify(res),
-    });
-  },
-  fail: (res) => {
-    my.alert({
-      content: JSON.stringify(res),
-    });
-  }
-});
-}
+          function pay() {
+            fetch('https://its.mouamle.space/api/payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token
+                },
+            }).then(res => res.json()).then(data => {
+                my.tradePay({
+                    paymentUrl: data.url,
+                    success: (res) => {
+                        my.alert({
+                            content: "Payment successful",
+                        });
+                    },
+                });
+            }).catch(err => {
+                my.alert({
+                    content: "Payment failed",
+                });
+            });
+        }
+
+
+
+
+
+//   const trade = ()=> {
+//     my.tradePay({
+//     paymentUrl: "https://www.wallet.com/cashier?orderId=xxxxxxx", // get the redirectUrl from the server first
+//   success: (res) => {
+//     my.alert({
+//       content: JSON.stringify(res),
+//     });
+//   },
+//   fail: (res) => {
+//     my.alert({
+//       content: JSON.stringify(res),
+//     });
+//   }
+// });
+// }
 
 
   return (
@@ -191,7 +219,7 @@ function App() {
           Auth
         </button>
 
-        <button onClick={trade}>
+        <button onClick={pay}>
           Pay
         </button>
 
