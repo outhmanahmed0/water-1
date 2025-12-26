@@ -65,8 +65,8 @@ function App() {
   const handleReset = () => {
     setCount(0)
   }
-  tokenid = "";
-  
+  var tokenid = "";
+
   const getMessage = () => {
     if (count === 0) return "Let’s start drinking water 💧"
     if (count >= goal) return "Great! You are well hydrated 🎉"
